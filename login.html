@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Login</title>
+  <link rel="stylesheet" href="https://unpkg.com/antd-mobile@5.42.3/bundle/css-vars-patch.css" />
+  <link rel="stylesheet" href="https://unpkg.com/antd-mobile@5.42.3/bundle/antd-mobile.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: #e5e5e5;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+    }
+
+    #root {
+      width: 393px;
+      min-width: 393px;
+      max-width: 393px;
+      height: 100%;
+      background: #fff;
+      overflow-y: auto;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .page {
+      width: 393px;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+
+    /* ── Header ── */
+    .header {
+      padding: 48px 24px 32px;
+      background: linear-gradient(145deg, #1677ff 0%, #4096ff 100%);
+      color: #fff;
+      position: relative;
+    }
+    .header .logo {
+      width: 56px; height: 56px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+    .header p  { font-size: 14px; opacity: .75; }
+    .lang-switcher {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .lang-switcher:active {
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* ── Body ── */
+    .body {
+      flex: 1;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Tabs ── */
+    .adm-tabs-tab { font-size: 15px !important; }
+    .adm-tabs-tab-active { color: #1677ff !important; }
+    .adm-tabs-tab-line { background: #1677ff !important; }
+
+    /* ── Form ── */
+    .form-wrap { margin-top: 20px; }
+
+    .field-label {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 6px;
+      margin-top: 16px;
+    }
+    .field-label:first-child { margin-top: 0; }
+
+    .input-box {
+      background: #f7f8fa;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      border: 1.5px solid transparent;
+      transition: border-color .2s;
+    }
+    .input-box.focused { border-color: #1677ff; background: #fff; }
+    .input-box.error   { border-color: #ff4d4f; background: #fff9f9; }
+
+    .input-box .prefix {
+      font-size: 15px;
+      color: #666;
+      margin-right: 8px;
+      white-space: nowrap;
+    }
+    .input-box .adm-input {
+      flex: 1;
+      font-size: 15px !important;
+      padding: 13px 0 !important;
+      background: transparent !important;
+    }
+    .input-box .suffix-btn {
+      background: none; border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: #aaa;
+      padding: 4px;
+    }
+
+    .error-msg {
+      font-size: 12px;
+      color: #ff4d4f;
+      margin-top: 5px;
+      min-height: 16px;
+    }
+
+    /* ── Phone prefix picker ── */
+    .prefix-btn {
+      background: none; border: none;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 4px;
+      font-size: 15px; color: #333;
+      padding-right: 10px;
+      border-right: 1px solid #e5e5e5;
+      margin-right: 10px;
+    }
+    .prefix-btn .arrow { font-size: 11px; color: #aaa; }
+
+    /* ── Forgot ── */
+    .forgot {
+      text-align: right;
+      margin-top: 10px;
+      font-size: 13px;
+      color: #1677ff;
+      cursor: pointer;
+    }
+
+    /* ── Submit ── */
+    .submit-btn {
+      margin-top: 28px;
+      width: 100%;
+      height: 48px !important;
+      border-radius: 12px !important;
+      font-size: 16px !important;
+      font-weight: 600 !important;
+      background: linear-gradient(135deg, #1677ff, #4096ff) !important;
+      border: none !important;
+      letter-spacing: .5px;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      display: flex; align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      color: #bbb;
+      font-size: 13px;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1;
+      height: 1px; background: #ebebeb;
+    }
+
+    /* ── Social buttons ── */
+    .social-row {
+      display: flex;
+      gap: 12px;
+    }
+    .social-btn {
+      flex: 1;
+      height: 46px !important;
+      border-radius: 10px !important;
+      font-size: 14px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 8px !important;
+      border: 1.5px solid #e5e5e5 !important;
+      background: #fff !important;
+      color: #333 !important;
+      font-weight: 500 !important;
+    }
+    .social-btn img { width: 20px; height: 20px; }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 13px;
+      color: #999;
+    }
+    .footer span { color: #1677ff; cursor: pointer; }
+
+    /* ── Popup (country picker) ── */
+    .country-list {
+      padding: 16px 0;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+    .country-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .country-item:active { background: #f0f7ff; }
+    .country-item .dial { color: #1677ff; font-weight: 600; }
+    .country-item.selected { background: #f0f7ff; }
+
+    /* ── Language Picker ── */
+    .lang-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .lang-item:active { background: #f0f7ff; }
+    .lang-item.selected { background: #f0f7ff; }
+    .lang-item .check { color: #1677ff; font-weight: 600; }
+
+    /* ── Keep input above keyboard ── */
+    .keyboard-aware {
+      transition: padding-bottom .3s;
+    }
+
+    /* ── Toast ── */
+    .adm-toast { z-index: 9999 !important; }
+
+    /* ── 60%黑色遮罩层：在 adm-overflow-hidden 上层，在 adm-popup-body 下层 ── */
+    .custom-mask {
+      position: fixed;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+      width: 393px;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 999;
+      cursor: pointer;
+      animation: maskFadeIn 0.3s ease-out;
+    }
+
+    .custom-mask.closing {
+      animation: maskFadeOut 0.3s ease-out forwards;
+    }
+
+    @keyframes maskFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes maskFadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    .adm-overflow-hidden {
+      z-index: 998 !important;
+    }
+
+    .adm-popup-body-position-bottom {
+      z-index: 1000 !important;
+      max-width: 393px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      animation: popupSlideUp 0.3s ease-out;
+    }
+
+    .adm-popup-body-position-bottom.closing {
+      animation: popupSlideDown 0.3s ease-out forwards;
+    }
+
+    @keyframes popupSlideUp {
+      from { transform: translateX(-50%) translateY(100%); }
+      to { transform: translateX(-50%) translateY(0); }
+    }
+
+    @keyframes popupSlideDown {
+      from { transform: translateX(-50%) translateY(0); }
+      to { transform: translateX(-50%) translateY(100%); }
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/antd-mobile@5.42.3/umd/antd-mobile.js"></script>
+
+<script>
+const { useState, useRef, useCallback, useEffect } = React;
+const {
+  Tabs, Input, Button, Toast, Popup, SafeArea
+} = window.antdMobile;
+
+/* ─── Translations ─────────────────────────────── */
+const TRANSLATIONS = {
+  en: {
+    title: 'Multi-brand Team',
+    subtitle: 'Sponsored for you',
+    emailLogin: 'Email Login',
+    phoneLogin: 'Phone Login',
+    emailAddress: 'Email Address',
+    emailPlaceholder: 'example@email.com',
+    phoneNumber: 'Phone Number',
+    phonePlaceholder: 'Enter 11-digit phone number',
+    password: 'Password',
+    passwordPlaceholder: 'Enter password',
+    forgotPassword: 'Forgot password?',
+    login: 'Login',
+    otherLoginMethods: 'Other login methods',
+    noAccount: "Don't have an account? ",
+    registerNow: 'Register now',
+    selectCountry: 'Select Country/Region',
+    selectLanguage: 'Select Language',
+    loginSuccess: 'Login successful!',
+    enterEmailPassword: 'Please enter email and password',
+    invalidEmail: 'Please enter a valid email address',
+    enterPhone: 'Please enter phone number',
+    phoneDigitsOnly: 'Phone number can only contain digits',
+    phoneLength: 'Phone number should be {len} digits',
+    passwordMinLength: 'Password must be at least 6 characters',
+  },
+  zh: {
+    title: '多品牌小团队',
+    subtitle: '为您倾情赞助',
+    emailLogin: '邮箱登录',
+    phoneLogin: '手机登录',
+    emailAddress: '邮箱地址',
+    emailPlaceholder: 'example@email.com',
+    phoneNumber: '手机号码',
+    phonePlaceholder: '请输入 11 位手机号',
+    password: '密码',
+    passwordPlaceholder: '请输入密码',
+    forgotPassword: '忘记密码？',
+    login: '登录',
+    otherLoginMethods: '其他登录方式',
+    noAccount: '还没有账号？',
+    registerNow: '立即注册',
+    selectCountry: '选择国家/地区',
+    selectLanguage: '选择语言',
+    loginSuccess: '登录成功！',
+    enterEmailPassword: '请输入邮箱和密码',
+    invalidEmail: '请输入有效的邮箱地址',
+    enterPhone: '请输入手机号',
+    phoneDigitsOnly: '手机号只能包含数字',
+    phoneLength: '手机号应为 {len} 位数字',
+    passwordMinLength: '密码至少 6 位',
+  },
+  ja: {
+    title: 'マルチブランドチーム',
+    subtitle: 'あなたのためのスポンサー',
+    emailLogin: 'メールログイン',
+    phoneLogin: '電話ログイン',
+    emailAddress: 'メールアドレス',
+    emailPlaceholder: 'example@email.com',
+    phoneNumber: '電話番号',
+    phonePlaceholder: '電話番号を入力',
+    password: 'パスワード',
+    passwordPlaceholder: 'パスワードを入力',
+    forgotPassword: 'パスワードを忘れた？',
+    login: 'ログイン',
+    otherLoginMethods: '他のログイン方法',
+    noAccount: 'アカウントをお持ちでないですか？',
+    registerNow: '今すぐ登録',
+    selectCountry: '国/地域を選択',
+    selectLanguage: '言語を選択',
+    loginSuccess: 'ログイン成功！',
+    enterEmailPassword: 'メールとパスワードを入力してください',
+    invalidEmail: '有効なメールアドレスを入力してください',
+    enterPhone: '電話番号を入力してください',
+    phoneDigitsOnly: '電話番号は数字のみです',
+    phoneLength: '電話番号は{len}桁である必要があります',
+    passwordMinLength: 'パスワードは6文字以上である必要があります',
+  },
+  es: {
+    title: 'Equipo multimarca',
+    subtitle: 'Patrocinado para ti',
+    emailLogin: 'Iniciar sesión con correo',
+    phoneLogin: 'Iniciar sesión con teléfono',
+    emailAddress: 'Dirección de correo',
+    emailPlaceholder: 'example@email.com',
+    phoneNumber: 'Número de teléfono',
+    phonePlaceholder: 'Ingrese el número de teléfono',
+    password: 'Contraseña',
+    passwordPlaceholder: 'Ingrese la contraseña',
+    forgotPassword: '¿Olvidó su contraseña?',
+    login: 'Iniciar sesión',
+    otherLoginMethods: 'Otros métodos',
+    noAccount: '¿No tiene una cuenta? ',
+    registerNow: 'Regístrese ahora',
+    selectCountry: 'Seleccionar país/región',
+    selectLanguage: 'Seleccionar idioma',
+    loginSuccess: '¡Inicio de sesión exitoso!',
+    enterEmailPassword: 'Por favor ingrese correo y contraseña',
+    invalidEmail: 'Por favor ingrese un correo electrónico válido',
+    enterPhone: 'Por favor ingrese el número de teléfono',
+    phoneDigitsOnly: 'El número de teléfono solo puede contener dígitos',
+    phoneLength: 'El número de teléfono debe tener {len} dígitos',
+    passwordMinLength: 'La contraseña debe tener al menos 6 caracteres',
+  },
+};
+
+const LANGUAGES = [
+  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'zh', name: '中文', flag: '🇨🇳' },
+  { code: 'ja', name: '日本語', flag: '🇯🇵' },
+  { code: 'es', name: 'Español', flag: '🇪🇸' },
+];
+
+/* ─── Country codes ─────────────────────────────── */
+const COUNTRIES = [
+  { name: '中国',         dial: '+86',  flag: '🇨🇳' },
+  { name: 'United States','dial': '+1',  flag: '🇺🇸' },
+  { name: 'United Kingdom','dial': '+44', flag: '🇬🇧' },
+  { name: 'Japan',        dial: '+81',  flag: '🇯🇵' },
+  { name: 'South Korea',  dial: '+82',  flag: '🇰🇷' },
+  { name: 'Singapore',    dial: '+65',  flag: '🇸🇬' },
+  { name: 'Australia',    dial: '+61',  flag: '🇦🇺' },
+  { name: 'Germany',      dial: '+49',  flag: '🇩🇪' },
+  { name: 'France',       dial: '+33',  flag: '🇫🇷' },
+  { name: 'Canada',       dial: '+1',   flag: '🇨🇦' },
+];
+
+/* ─── Validators ────────────────────────────────── */
+const validateEmail = (v, t) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : t.invalidEmail;
+const validatePhone = (v, dial, t) => {
+  if (!v) return t.enterPhone;
+  if (!/^\d+$/.test(v)) return t.phoneDigitsOnly;
+  const len = dial === '+86' ? 11 : dial === '+1' ? 10 : null;
+  if (len && v.length !== len) return t.phoneLength.replace('{len}', len);
+  return '';
+};
+const validatePwd = (v, t) => v.length >= 6 ? '' : t.passwordMinLength;
+
+/* ─── Custom Input Field ────────────────────────── */
+function Field({ label, prefix, suffix, error, inputRef, ...props }) {
+  const [focused, setFocused] = useState(false);
+  return React.createElement('div', null,
+    label && React.createElement('div', { className: 'field-label' }, label),
+    React.createElement('div', {
+      className: `input-box ${focused ? 'focused' : ''} ${error ? 'error' : ''}`,
+      onClick: () => { if (inputRef?.current) inputRef.current.focus(); }
+    },
+      prefix && React.createElement('span', { className: 'prefix' }, prefix),
+      React.createElement(Input, {
+        ...props,
+        ref: inputRef,
+        onFocus: (e) => { setFocused(true); props.onFocus?.(e); scrollToInput(e); },
+        onBlur:  (e) => { setFocused(false); props.onBlur?.(e); },
+      }),
+      suffix && React.createElement('span', null, suffix)
+    ),
+    React.createElement('div', { className: 'error-msg' }, error || '')
+  );
+}
+
+/* ─── Scroll input above keyboard ──────────────── */
+function scrollToInput(e) {
+  setTimeout(() => {
+    try {
+      const el = e.target;
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch(_) {}
+  }, 300);
+}
+
+/* ─── Password eye toggle ───────────────────────── */
+function PwdField({ label, value, onChange, error, name, placeholder = 'Enter password' }) {
+  const [show, setShow] = useState(false);
+  const ref = useRef();
+  return React.createElement(Field, {
+    label,
+    inputRef: ref,
+    type: show ? 'text' : 'password',
+    placeholder,
+    value,
+    onChange,
+    clearable: false,
+    error,
+    suffix: React.createElement('button', {
+      className: 'suffix-btn',
+      type: 'button',
+      onMouseDown: (e) => { e.preventDefault(); setShow(s => !s); }
+    },
+    show
+      ? React.createElement('svg', { width:20, height:20, viewBox:'0 0 24 24', fill:'none', stroke:'#aaa', strokeWidth:1.8, strokeLinecap:'round', strokeLinejoin:'round' },
+          React.createElement('path', { d:'M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94' }),
+          React.createElement('path', { d:'M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19' }),
+          React.createElement('line', { x1:'1', y1:'1', x2:'23', y2:'23' })
+        )
+      : React.createElement('svg', { width:20, height:20, viewBox:'0 0 24 24', fill:'none', stroke:'#aaa', strokeWidth:1.8, strokeLinecap:'round', strokeLinejoin:'round' },
+          React.createElement('path', { d:'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z' }),
+          React.createElement('circle', { cx:'12', cy:'12', r:'3' })
+        )
+    )
+  });
+}
+
+/* ─── Email Login Form ──────────────────────────── */
+function EmailForm({ t }) {
+  const [email, setEmail]     = useState('');
+  const [pwd, setPwd]         = useState('');
+  const [errors, setErrors]   = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const submit = () => {
+    const e = {
+      email: validateEmail(email, t),
+      pwd:   validatePwd(pwd, t),
+    };
+    setErrors(e);
+    if (e.email || e.pwd) return;
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      Toast.show({ icon: 'success', content: t.loginSuccess });
+    }, 1500);
+  };
+
+  return React.createElement('div', { className: 'form-wrap' },
+    React.createElement(Field, {
+      label: t.emailAddress,
+      prefix: React.createElement('svg', { width:18, height:18, viewBox:'0 0 24 24', fill:'none', stroke:'#aaa', strokeWidth:1.8, strokeLinecap:'round', strokeLinejoin:'round', style:{flexShrink:0} },
+        React.createElement('rect', { x:'2', y:'4', width:'20', height:'16', rx:'2' }),
+        React.createElement('path', { d:'M2 7l10 7 10-7' })
+      ),
+      type: 'email',
+      placeholder: t.emailPlaceholder,
+      value: email,
+      onChange: v => { setEmail(v); setErrors(p => ({...p, email:''})); },
+      error: errors.email,
+    }),
+    React.createElement(PwdField, {
+      label: t.password,
+      value: pwd,
+      onChange: v => { setPwd(v); setErrors(p => ({...p, pwd:''})); },
+      error: errors.pwd,
+      placeholder: t.passwordPlaceholder,
+    }),
+    React.createElement('div', { className: 'forgot' }, t.forgotPassword),
+    React.createElement(Button, {
+      className: 'submit-btn',
+      color: 'primary',
+      size: 'large',
+      loading,
+      onClick: submit,
+    }, t.login),
+    React.createElement(SocialSection)
+  );
+}
+
+/* ─── Phone Login Form ──────────────────────────── */
+function PhoneForm({ t }) {
+  const [country, setCountry]   = useState(COUNTRIES[0]);
+  const [phone, setPhone]       = useState('');
+  const [pwd, setPwd]           = useState('');
+  const [errors, setErrors]     = useState({});
+  const [loading, setLoading]   = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [showMask, setShowMask] = useState(false);
+  const [maskClosing, setMaskClosing] = useState(false);
+
+  const handlePhone = v => {
+    const digits = v.replace(/\D/g, '');
+    setPhone(digits);
+    setErrors(p => ({...p, phone: ''}));
+  };
+
+  const handleClosePicker = () => {
+    if (isClosing) return; // 防止重复点击
+    setIsClosing(true);
+    const popupBody = document.querySelector('.adm-popup-body-position-bottom');
+    if (popupBody) popupBody.classList.add('closing');
+    setTimeout(() => {
+      setShowPicker(false);
+      setMaskClosing(true); // 弹窗消失后，蒙版开始淡出
+    }, 300);
+    setTimeout(() => {
+      setShowMask(false);
+      setMaskClosing(false);
+      setIsClosing(false);
+    }, 600);
+  };
+
+  useEffect(() => {
+    if (showPicker) {
+      setShowMask(true);
+      setMaskClosing(false);
+      setIsClosing(false);
+      setTimeout(() => {
+        const popupBody = document.querySelector('.adm-popup-body-position-bottom');
+        if (popupBody) popupBody.classList.remove('closing');
+      }, 50);
+    }
+  }, [showPicker]);
+
+  const submit = () => {
+    const e = {
+      phone: validatePhone(phone, country.dial, t),
+      pwd:   validatePwd(pwd, t),
+    };
+    setErrors(e);
+    if (e.phone || e.pwd) return;
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      Toast.show({ icon: 'success', content: t.loginSuccess });
+    }, 1500);
+  };
+
+  return React.createElement('div', { className: 'form-wrap' },
+    React.createElement(Field, {
+      label: t.phoneNumber,
+      inputMode: 'numeric',
+      pattern: '[0-9]*',
+      type: 'tel',
+      placeholder: country.dial === '+86' ? t.phonePlaceholder : t.phonePlaceholder,
+      value: phone,
+      onChange: handlePhone,
+      error: errors.phone,
+      prefix: React.createElement('button', {
+        className: 'prefix-btn',
+        type: 'button',
+        onClick: () => setShowPicker(true),
+      },
+        React.createElement('span', null, `${country.flag} ${country.dial}`),
+        React.createElement('svg', { width:14, height:14, viewBox:'0 0 24 24', fill:'none', stroke:'#aaa', strokeWidth:2, strokeLinecap:'round', strokeLinejoin:'round' },
+          React.createElement('polyline', { points:'6 9 12 15 18 9' })
+        )
+      )
+    }),
+    React.createElement(PwdField, {
+      label: t.password,
+      value: pwd,
+      onChange: v => { setPwd(v); setErrors(p => ({...p, pwd:''})); },
+      error: errors.pwd,
+      placeholder: t.passwordPlaceholder,
+    }),
+    React.createElement('div', { className: 'forgot' }, t.forgotPassword),
+    React.createElement(Button, {
+      className: 'submit-btn',
+      color: 'primary',
+      size: 'large',
+      loading,
+      onClick: submit,
+    }, t.login),
+    React.createElement(SocialSection),
+
+    /* Custom Mask Layer - 60% black */
+    showMask && React.createElement('div', {
+      className: `custom-mask ${maskClosing ? 'closing' : ''}`,
+      onClick: handleClosePicker
+    }),
+
+    /* Country Picker Popup */
+    React.createElement(Popup, {
+      visible: showPicker,
+      onMaskClick: handleClosePicker,
+      position: 'bottom',
+      bodyStyle: { borderRadius: '16px 16px 0 0' },
+      getContainer: () => document.getElementById('root'),
+      mask: false,
+    },
+      React.createElement('div', { style: { padding: '16px 20px 8px', borderBottom: '1px solid #f0f0f0' } },
+        React.createElement('div', { style: { fontSize: 16, fontWeight: 600, textAlign: 'center' } }, t.selectCountry)
+      ),
+      React.createElement('div', { className: 'country-list' },
+        COUNTRIES.map(c =>
+          React.createElement('div', {
+            key: c.dial + c.name,
+            className: `country-item ${c.name === country.name ? 'selected' : ''}`,
+            onClick: () => { setCountry(c); handleClosePicker(); }
+          },
+            React.createElement('span', null, `${c.flag}  ${c.name}`),
+            React.createElement('span', { className: 'dial' }, c.dial)
+          )
+        )
+      ),
+      React.createElement(SafeArea, { position: 'bottom' })
+    )
+  );
+}
+
+/* ─── Social (Google / Apple / WeChat) ─────────── */
+function SocialSection() {
+  const handleGoogle = () => {
+    Toast.show({ icon: 'loading', content: '跳转 Google 登录…', duration: 1500 });
+  };
+  const handleApple = () => {
+    Toast.show({ icon: 'loading', content: '跳转 Apple 登录…', duration: 1500 });
+  };
+  const handleWeChat = () => {
+    Toast.show({ icon: 'loading', content: '跳转微信登录…', duration: 1500 });
+  };
+
+  const GoogleIcon = () => React.createElement('svg', { width:20, height:20, viewBox:'0 0 48 48' },
+    React.createElement('path', { fill:'#EA4335', d:'M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z' }),
+    React.createElement('path', { fill:'#4285F4', d:'M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z' }),
+    React.createElement('path', { fill:'#FBBC05', d:'M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z' }),
+    React.createElement('path', { fill:'#34A853', d:'M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z' }),
+    React.createElement('path', { fill:'none', d:'M0 0h48v48H0z' })
+  );
+
+  return React.createElement('div', null,
+    React.createElement('div', { className: 'divider' }, '其他登录方式'),
+    React.createElement('div', { className: 'social-row' },
+      React.createElement(Button, { className: 'social-btn', onClick: handleGoogle },
+        React.createElement(GoogleIcon),
+        'Google'
+      ),
+      React.createElement(Button, { className: 'social-btn', onClick: handleApple },
+        React.createElement('svg', { width:20, height:20, viewBox:'0 0 24 24', fill:'#333' },
+          React.createElement('path', { d:'M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z' })
+        ),
+        'Apple'
+      ),
+      React.createElement(Button, { className: 'social-btn', onClick: handleWeChat },
+        React.createElement('svg', { width:20, height:20, viewBox:'0 0 24 24', fill:'none' },
+          React.createElement('path', { fill:'#07C160', d:'M9.5 2C5.36 2 2 5.02 2 8.75c0 1.92.87 3.65 2.26 4.87L3.5 16l2.88-1.44A8.23 8.23 0 0 0 9.5 15.5c.34 0 .68-.02 1.01-.06A5.94 5.94 0 0 1 10 13c0-3.31 2.91-6 6.5-6 .36 0 .71.03 1.05.08C16.77 4.2 13.44 2 9.5 2z' }),
+          React.createElement('path', { fill:'#07C160', d:'M16.5 9C13.46 9 11 11.02 11 13.5S13.46 18 16.5 18c.7 0 1.36-.12 1.97-.33L21 19l-.8-2.4A4.27 4.27 0 0 0 21 13.5C21 11.02 19.54 9 16.5 9z' })
+        ),
+        '微信'
+      )
+    )
+  );
+}
+
+/* ─── App ───────────────────────────────────────── */
+function App() {
+  const [lang, setLang] = useState('en');
+  const [showLangPicker, setShowLangPicker] = useState(false);
+  const [langClosing, setLangClosing] = useState(false);
+  const [showLangMask, setShowLangMask] = useState(false);
+  const [langMaskClosing, setLangMaskClosing] = useState(false);
+
+  const t = TRANSLATIONS[lang];
+  const currentLang = LANGUAGES.find(l => l.code === lang);
+
+  const handleCloseLangPicker = () => {
+    if (langClosing) return;
+    setLangClosing(true);
+    const popupBody = document.querySelector('.adm-popup-body-position-bottom');
+    if (popupBody) popupBody.classList.add('closing');
+    setTimeout(() => {
+      setShowLangPicker(false);
+      setLangMaskClosing(true);
+    }, 300);
+    setTimeout(() => {
+      setShowLangMask(false);
+      setLangMaskClosing(false);
+      setLangClosing(false);
+    }, 600);
+  };
+
+  useEffect(() => {
+    if (showLangPicker) {
+      setShowLangMask(true);
+      setLangMaskClosing(false);
+      setLangClosing(false);
+      setTimeout(() => {
+        const popupBody = document.querySelector('.adm-popup-body-position-bottom');
+        if (popupBody) popupBody.classList.remove('closing');
+      }, 50);
+    }
+  }, [showLangPicker]);
+
+  /* Push page up when keyboard appears (iOS/Android) */
+  useEffect(() => {
+    const orig = window.visualViewport
+      ? window.visualViewport.height
+      : window.innerHeight;
+
+    const onResize = () => {
+      const current = window.visualViewport
+        ? window.visualViewport.height
+        : window.innerHeight;
+      const diff = orig - current;
+      document.getElementById('root').style.paddingBottom =
+        diff > 100 ? diff + 'px' : '0';
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', onResize);
+    } else {
+      window.addEventListener('resize', onResize);
+    }
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', onResize);
+      } else {
+        window.removeEventListener('resize', onResize);
+      }
+    };
+  }, []);
+
+  return React.createElement('div', { className: 'page' },
+
+    /* Header */
+    React.createElement('div', { className: 'header' },
+      React.createElement('div', { className: 'logo' },
+        React.createElement('img', { src:'images/狗头人.png', alt:'logo', style:{ width:'100%', height:'100%', objectFit:'cover', borderRadius:'12px' } })
+      ),
+      React.createElement('h1', null, t.title),
+      React.createElement('p', null, t.subtitle),
+      React.createElement('button', {
+        className: 'lang-switcher',
+        onClick: () => setShowLangPicker(true)
+      },
+        currentLang.flag,
+        currentLang.code.toUpperCase()
+      )
+    ),
+
+    /* Body */
+    React.createElement('div', { className: 'body keyboard-aware' },
+      React.createElement(Tabs, { defaultActiveKey: 'email' },
+        React.createElement(Tabs.Tab, { title: t.emailLogin, key: 'email' },
+          React.createElement(EmailForm, { t })
+        ),
+        React.createElement(Tabs.Tab, { title: t.phoneLogin, key: 'phone' },
+          React.createElement(PhoneForm, { t })
+        )
+      ),
+
+      /* Footer */
+      React.createElement('div', { className: 'footer' },
+        t.noAccount,
+        React.createElement('span', null, t.registerNow)
+      )
+    ),
+
+    /* Language Picker Mask */
+    showLangMask && React.createElement('div', {
+      className: `custom-mask ${langMaskClosing ? 'closing' : ''}`,
+      onClick: handleCloseLangPicker
+    }),
+
+    /* Language Picker Popup */
+    React.createElement(Popup, {
+      visible: showLangPicker,
+      onMaskClick: handleCloseLangPicker,
+      position: 'bottom',
+      bodyStyle: { borderRadius: '16px 16px 0 0' },
+      getContainer: () => document.getElementById('root'),
+      mask: false,
+    },
+      React.createElement('div', { style: { padding: '16px 20px 8px', borderBottom: '1px solid #f0f0f0' } },
+        React.createElement('div', { style: { fontSize: 16, fontWeight: 600, textAlign: 'center' } }, t.selectLanguage)
+      ),
+      React.createElement('div', { className: 'country-list' },
+        LANGUAGES.map(l =>
+          React.createElement('div', {
+            key: l.code,
+            className: `lang-item ${l.code === lang ? 'selected' : ''}`,
+            onClick: () => { setLang(l.code); handleCloseLangPicker(); }
+          },
+            React.createElement('span', null, `${l.flag}  ${l.name}`),
+            l.code === lang && React.createElement('span', { className: 'check' }, '✓')
+          )
+        )
+      ),
+      React.createElement(SafeArea, { position: 'bottom' })
+    )
+  );
+}
+
+/* ─── Mount ─────────────────────────────────────── */
+ReactDOM.createRoot(document.getElementById('root')).render(
+  React.createElement(App)
+);
+</script>
+</body>
+</html>
